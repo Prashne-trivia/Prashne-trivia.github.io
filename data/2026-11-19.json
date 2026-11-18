@@ -25,14 +25,14 @@
       "fact": "They were ex Amazon employees. Inspired by Amazon's early playbook, they started exclusively with books."
     },
     {
-      "question": "Originally beamed out of Hong Kong, STAR entered India via Star Plus as an English-language channel, while _____ served as its Hindi-language counterpart under the same satellite banner. After the two split in 2000, Star Plus pivoted entirely to Hindi programming—launching blockbuster hits like Kaun Banega Crorepati and Kyunki Saas Bhi Kabhi Bahu Thi.",
+      "question": "STAR Plus entered India as an English channel, while _____ served as its Hindi counterpart under the same satellite banner. After the two split in 2000, Star Plus pivoted entirely to Hindi programming—launching blockbuster hits like Kaun Banega Crorepati.",
       "options": [
         "Sony Entertainment Television",
         "Zee TV",
         "Colors TV",
         "Sahara One"
       ],
-      "correctIndex": 0,
+      "correctIndex": 1,
       "fact": "In July 2000, a struggling Star Plus bet everything on a pure-Hindi rebrand and a nearly bankrupt Amitabh Bachchan hosting Kaun Banega Crorepati, shattering Indian TRP records and making it the #1 channel overnight."
     },
     {
@@ -49,12 +49,12 @@
     {
       "question": "Before delivering millions of meals across India, Sriharsha Majety, Nandan Reddy, and Rahul Jaimini incorporated their logistics venture in 2013 under a corporate name that sounded like a slang for bluff. What was Swiggy's original registered company name?",
       "options": [
-        "Bundl Technologies",
         "Parcel Technologies",
         "Rail Technologies",
+        "Bundl Technologies",
         "CalDal Technologies"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "fact": "In 2013, BITS Pilani alumni Sriharsha Majety and Nandan Reddy (along with Rahul Jaimini) initially launched Bundl, an e-commerce logistics platform designed to bundle up and ship products for small local businesses."
     },
     {
