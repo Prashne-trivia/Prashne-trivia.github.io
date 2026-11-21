@@ -17,3 +17,6 @@ function getTodayKey() {
   const t = new Date(utc + (3600000 * 5.5));
   return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
 }
+
+// True if the issue date is after today (not playable yet). ISO dates compare correctly as strings.
+function isFutureIssue(dateKey) { return dateKey > getTodayKey(); }

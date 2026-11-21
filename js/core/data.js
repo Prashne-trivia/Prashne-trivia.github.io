@@ -19,5 +19,10 @@ async function loadManifest() {
 // Load one day's questions (script file registers itself under its date key)
 async function loadIssueQuestions(meta, dateKey) {
   if (!window.PRASHNE_DAYS?.[dateKey]) await loadScript(meta.file);
+  if (!window.PRASHNE_DAYS?.[dateKey]) {
+    // The file loaded but registered under a different date key than config.js expects
+    console.error(`${meta.file} must set window.PRASHNE_DAYS['${dateKey}']. Check the date key inside that file.`);
+    throw new Error('Date key mismatch in ' + meta.file);
+  }
   return window.PRASHNE_DAYS[dateKey].questions;
 }
