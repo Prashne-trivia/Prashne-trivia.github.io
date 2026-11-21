@@ -12,7 +12,7 @@ async function startIssue(dateKey, errorMsg) {
   const meta = availableIssues.issues?.[dateKey];
   if (!meta) { showToast("Today's Prashne is not ready yet! Check back tomorrow ⏳"); return; }
   if (appState.completedDates[dateKey]) { showResult(appState.completedDates[dateKey]); return; }
-  try { setupQuizSession(dateKey, meta.issueNumber, await loadIssueQuestions(meta)); }
+  try { setupQuizSession(dateKey, meta.issueNumber, await loadIssueQuestions(meta, dateKey)); }
   catch (e) { showToast(errorMsg); }
 }
 function startDailyQuiz() { return startIssue(getTodayKey(), "Could not load today's questions."); }
