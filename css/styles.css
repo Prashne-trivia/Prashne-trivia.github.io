@@ -10,7 +10,10 @@
     ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 9999px; }
   
     /* Game mode: lock page to the viewport so the whole question fits without scrolling */
-    body.game-active { height: 100dvh; overflow: hidden; }
+    /* min-height: 0 overrides Tailwind's min-h-screen (100vh), which is taller than the visible area on phones and pushed the bottom off-screen */
+    body.game-active { height: 100dvh; min-height: 0; overflow: hidden; }
+    /* Scrollable question card: smooth touch scrolling, no scroll chaining to the page */
+    .game-scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y; }
     body.game-active main { padding-top: 0.5rem; padding-bottom: 0.75rem; justify-content: flex-start; min-height: 0; }
     body.game-active #app-footer { display: none; }
     body.game-active header { padding-top: 0.5rem; padding-bottom: 0.25rem; }
