@@ -1,6 +1,6 @@
-{
-  "issueNumber": 1,
-  "title": "Startups",
+// Questions for 2026-11-19 (Startups)
+window.PRASHNE_DAYS = window.PRASHNE_DAYS || {};
+window.PRASHNE_DAYS['2026-11-19'] = {
   "questions": [
     {
       "question": "Anupam Mittal stayed unmarried for over a decade after launching his matchmaking website, remaining too engaged in growing the business to tie the knot himself. What was the platform originally called when he launched it in 1997?",
@@ -80,4 +80,4 @@
       "fact": "When India's national broadcaster first launched as an experimental pilot project in Delhi on September 15, 1959, it didn't even have its own dedicated building or budget. It was operated out of a makeshift studio under All India Radio using equipment gifted by UNESCO and a foreign electronics firm."
     }
   ]
-}
+};
