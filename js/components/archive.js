@@ -10,7 +10,10 @@ const ArchiveComponent = {
   open() {
     playTone('click');
     const list = document.getElementById('archive-list'); list.innerHTML = '';
-    Object.entries(availableIssues.issues || {}).forEach(([dateStr, meta]) => {
+    Object.entries(availableIssues.issues || {})
+      .filter(([dateStr]) => dateStr <= getTodayKey())   // hide future issues
+      .sort((a, b) => b[0].localeCompare(a[0]))          // newest first
+      .forEach(([dateStr, meta]) => {
       const isPlayed = !!appState.completedDates[dateStr];
       const item = document.createElement('div');
       item.className = 'p-4 rounded-2xl bg-paper-50 dark:bg-ink-800/80 border border-paper-200 dark:border-ink-700 flex items-center justify-between gap-3';
