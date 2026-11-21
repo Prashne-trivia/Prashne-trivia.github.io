@@ -11,6 +11,7 @@ async function startIssue(dateKey, errorMsg) {
   playTone('click');
   const meta = availableIssues.issues?.[dateKey];
   if (!meta) { showToast("Today's Prashne is not ready yet! Check back tomorrow ⏳"); return; }
+  if (isFutureIssue(dateKey)) { showToast('This issue is not available yet. Check back on its date! ⏳'); return; }
   if (appState.completedDates[dateKey]) { showResult(appState.completedDates[dateKey]); return; }
   try { setupQuizSession(dateKey, meta.issueNumber, await loadIssueQuestions(meta, dateKey)); }
   catch (e) { showToast(errorMsg); }
