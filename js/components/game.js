@@ -25,7 +25,7 @@ const GameComponent = {
       </div>
 
       <!-- Question card: fills remaining height; scrolls internally only on very small screens -->
-      <div class="flex-1 min-h-0 overflow-y-auto rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-4 shadow-lg flex flex-col gap-3">
+      <div class="flex-1 min-h-0 game-scroll rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-4 shadow-lg flex flex-col gap-3">
         <h2 id="q-text" class="font-display font-bold text-lg sm:text-xl leading-snug tracking-tight">Loading...</h2>
         <div id="options-container" class="flex flex-col gap-2"></div>
 
