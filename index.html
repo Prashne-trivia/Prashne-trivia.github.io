@@ -3,381 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Prashne (ಪ್ರಶ್ನೆ) • Daily 7 Trivia</title>
+  <title>Prashne • Daily 7 Trivia</title>
 
-  <!-- Google Fonts: Space Grotesk (Display) & Plus Jakarta Sans (Body) & Noto Sans Kannada/Devanagari -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@600;700&family=Noto+Sans+Kannada:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS -->
+  <!-- Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Tone.js for crisp, zero-dependency procedural UI sound effects -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
-  <!-- Tailwind Configuration -->
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            display: ['"Space Grotesk"', '"Noto Sans Kannada"', '"Noto Sans Devanagari"', 'sans-serif'],
-            sans: ['"Plus Jakarta Sans"', '"Noto Sans Kannada"', '"Noto Sans Devanagari"', 'sans-serif'],
-          },
-          colors: {
-            saffron: { DEFAULT: '#FF6B00', hover: '#E65C00', light: '#FFF0E5' },
-            peacock: { DEFAULT: '#00A896', dark: '#028090', light: '#E0F7F4' },
-            indigoRoyal: { DEFAULT: '#3A0CA3', light: '#EFE9FC' },
-            ink: { 950: '#0B0D13', 900: '#12151E', 800: '#1B202E', 700: '#272E40' },
-            paper: { 50: '#FAF8F5', 100: '#F2EFE9', 200: '#E5E0D8' }
-          },
-          boxShadow: {
-            'arcade': '0 4px 0 0 rgba(0, 0, 0, 0.25)',
-            'arcade-saffron': '0 5px 0 0 #B84900',
-            'arcade-dark': '0 4px 0 0 rgba(255, 255, 255, 0.08)',
-          },
-          animation: {
-            'shake': 'shake 0.45s cubic-bezier(.36,.07,.19,.97) both',
-            'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
-            'pulse-fast': 'pulse 0.8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          },
-          keyframes: {
-            shake: {
-              '10%, 90%': { transform: 'translate3d(-2px, 0, 0)' },
-              '20%, 80%': { transform: 'translate3d(4px, 0, 0)' },
-              '30%, 50%, 70%': { transform: 'translate3d(-6px, 0, 0)' },
-              '40%, 60%': { transform: 'translate3d(6px, 0, 0)' }
-            },
-            pop: {
-              '0%': { transform: 'scale(0.95)', opacity: '0.7' },
-              '70%': { transform: 'scale(1.02)' },
-              '100%': { transform: 'scale(1)', opacity: '1' }
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    body { -webkit-tap-highlight-color: transparent; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
-    .bg-editorial-grid-dark { background-color: #0B0D13; background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px); background-size: 20px 20px; }
-    .bg-editorial-grid-light { background-color: #FAF8F5; background-image: radial-gradient(rgba(18, 21, 30, 0.07) 1px, transparent 1px); background-size: 20px 20px; }
-    .btn-tactile { transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease; }
-    .btn-tactile:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.25) !important; }
-    .timer-ring-circle { transition: stroke-dashoffset 0.1s linear, stroke 0.3s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 9999px; }
-  </style>
+  <!-- Theme + styles -->
+  <script src="js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body class="min-h-screen bg-editorial-grid-light dark:bg-editorial-grid-dark text-ink-900 dark:text-paper-50 transition-colors duration-200 selection:bg-saffron selection:text-white flex flex-col">
+  <!-- Mount points: filled by components in js/components/ -->
   <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2 w-full max-w-sm px-4"></div>
+  <div id="app-header"></div>
+  <main id="app-main" class="flex-1 w-full max-w-xl mx-auto px-4 py-4 flex flex-col justify-center"></main>
+  <div id="app-footer-slot"></div>
+  <div id="app-modal-slot"></div>
 
-  <header class="w-full max-w-xl mx-auto px-4 pt-4 pb-2 flex items-center justify-between">
-    <button onclick="goHome()" class="flex items-center gap-2.5 group focus:outline-none text-left" title="Return to Prashne Home">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-saffron to-amber-500 flex items-center justify-center text-white font-display font-bold text-xl shadow-arcade-saffron group-hover:scale-105 transition-transform">ಪ್ರ</div>
-      <div>
-        <div class="flex items-center gap-1.5"><span class="font-display font-bold text-xl tracking-tight leading-none text-gray-900">Prashne</span></div>
-        <p class="text-[11px] font-medium text-ink-700/70 dark:text-gray-400 mt-0.5"> India's Daily Pulse</p>
-      </div>
-    </button>
-    <div class="flex items-center gap-2">
-      <div class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white dark:bg-ink-800 border border-paper-200 dark:border-ink-700 shadow-sm" title="Current Daily Streak"><span class="text-sm">🔥</span><span id="header-streak" class="font-display font-bold text-sm">0</span></div>
-      <button id="btn-sound" onclick="toggleSound()" class="p-2 rounded-xl bg-white dark:bg-ink-800 border border-paper-200 dark:border-ink-700 text-ink-800 dark:text-gray-200 hover:border-saffron/50 transition-colors" title="Toggle sound" aria-label="Toggle sound">
-        <svg id="icon-sound-on" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" /></svg>
-        <svg id="icon-sound-off" class="w-4 h-4 hidden text-gray-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" /></svg>
-      </button>
-      <button id="btn-theme" onclick="toggleTheme()" class="p-2 rounded-xl bg-white dark:bg-ink-800 border border-paper-200 dark:border-ink-700 text-ink-800 dark:text-gray-200 hover:border-saffron/50 transition-colors" title="Toggle theme" aria-label="Toggle theme">
-        <svg id="icon-sun" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path stroke-linecap="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
-        <svg id="icon-moon" class="w-4 h-4 block dark:hidden text-indigoRoyal" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
-      </button>
-    </div>
-  </header>
-
-  <main class="flex-1 w-full max-w-xl mx-auto px-4 py-4 flex flex-col justify-center">
-    <section id="view-home" class="space-y-5 animate-pop">
-      <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-6 sm:p-8 shadow-xl">
-        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-saffron via-peacock to-indigoRoyal"></div>
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
-          <span id="home-issue-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-indigoRoyal/10 dark:bg-indigoRoyal/30 text-indigoRoyal dark:text-purple-300">ISSUE #--</span>
-          <span id="home-date-label" class="text-xs font-semibold text-gray-500 dark:text-gray-400">--</span>
-        </div>
-        <div class="space-y-3 mb-6">
-          <div class="inline-flex items-center gap-2 text-saffron font-display font-bold text-sm tracking-wide"><span>ಪ್ರಶ್ನೆ</span><span class="opacity-40">•</span><span>प्रश्न</span><span class="opacity-40">•</span><span>THE DAILY 7</span></div>
-          <h1 class="font-display font-bold text-3xl sm:text-4xl tracking-tight leading-[1.12]">Seven sharp questions. <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-saffron to-amber-500">25 seconds</span> on the clock.</h1>
-          <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">Test your cultural IQ on Desi pop culture, startups, cinema, and history. Play today's drop and share your score instantly.</p>
-        </div>
-        <div class="space-y-3">
-          <button id="btn-play-daily" onclick="startDailyQuiz()" class="btn-tactile w-full py-4 px-6 rounded-2xl bg-saffron hover:bg-saffron-hover text-white font-display font-bold text-lg tracking-wide shadow-arcade-saffron flex items-center justify-center gap-2"><span id="btn-play-text">Play Today's Prashne</span><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg></button>
-          <button onclick="openArchiveModal()" class="btn-tactile w-full py-3.5 px-5 rounded-2xl bg-paper-100 dark:bg-ink-800 hover:bg-paper-200/70 dark:hover:bg-ink-700 text-ink-900 dark:text-gray-100 font-display font-bold text-sm flex items-center justify-center gap-2"><span>📂</span><span>View Archive & Past Issues</span></button>
-        </div>
-      </div>
-      <div class="grid grid-cols-3 gap-3">
-        <div class="rounded-2xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-3.5 text-center"><div id="stat-played" class="font-display font-bold text-xl">0</div><div class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mt-0.5">Played</div></div>
-        <div class="rounded-2xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-3.5 text-center"><div id="stat-streak" class="font-display font-bold text-xl text-saffron">0 🔥</div><div class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mt-0.5">Streak</div></div>
-        <div class="rounded-2xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-3.5 text-center"><div id="stat-best" class="font-display font-bold text-xl text-peacock">- / 7</div><div class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mt-0.5">Best Score</div></div>
-      </div>
-    </section>
-
-    <section id="view-game" class="hidden space-y-4">
-      <div class="rounded-2xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-3.5 shadow-sm">
-        <div class="flex items-center justify-between gap-3 mb-3">
-          <div class="flex items-center gap-2"><span id="game-mode-badge" class="px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-saffron/15 text-saffron">ISSUE #--</span><span id="game-q-counter" class="font-display font-bold text-sm text-gray-600 dark:text-gray-300">Q1 of 7</span></div>
-          <div class="relative w-12 h-12 flex items-center justify-center shrink-0"><svg class="w-12 h-12" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="4" fill="transparent" class="text-paper-200 dark:text-ink-700" /><circle id="timer-ring" cx="24" cy="24" r="20" stroke="#00A896" stroke-width="4" stroke-linecap="round" fill="transparent" stroke-dasharray="125.66" stroke-dashoffset="0" class="timer-ring-circle" /></svg><span id="timer-text" class="absolute font-display font-bold text-sm tabular-nums">25</span></div>
-        </div>
-        <div id="progress-pills" class="grid grid-cols-7 gap-1.5"></div>
-      </div>
-      <div class="rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-5 sm:p-7 shadow-lg space-y-5">
-        <h2 id="q-text" class="font-display font-bold text-xl sm:text-2xl leading-snug tracking-tight">Loading...</h2>
-        <div id="options-container" class="space-y-2.5 pt-1"></div>
-        <div id="feedback-box" class="hidden rounded-2xl p-4 border transition-all animate-pop overflow-hidden">
-          <div class="flex items-start gap-3"><div id="feedback-icon" class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-bold text-sm mt-0.5">✓</div><div class="flex-1 space-y-1"><div class="flex items-center justify-between gap-2"><div id="feedback-title" class="font-display font-bold text-sm">Spot on!</div><span id="buffer-countdown-pill" class="text-[11px] font-display font-bold px-2 py-0.5 rounded-full bg-black/10 dark:bg-white/10 tabular-nums">Next in 5s</span></div><p id="feedback-fact" class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed"></p></div></div>
-          <div class="mt-3.5 w-full h-1.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden"><div id="buffer-progress-bar" class="h-full bg-saffron rounded-full transition-all duration-75 ease-linear" style="width: 100%;"></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="view-results" class="hidden space-y-5 animate-pop">
-      <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-6 sm:p-7 shadow-xl text-center">
-        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-saffron via-peacock to-indigoRoyal"></div>
-        <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-saffron/15 text-saffron border border-saffron/30 mb-3"><span id="res-rank-emoji">🏆</span><span id="res-rank-title">Chai-Tapri Topper</span></div>
-        <div class="my-2"><div class="font-display font-bold text-5xl sm:text-6xl tracking-tight"><span id="res-score" class="text-saffron">6</span><span class="text-gray-400 dark:text-gray-600 text-3xl sm:text-4xl">/7</span></div><p id="res-subtitle" class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Prashne #-- • Avg Speed: 6.4s/q</p></div>
-        <div class="my-5 p-4 rounded-2xl bg-paper-100 dark:bg-ink-800 border border-paper-200 dark:border-ink-700 max-w-xs mx-auto"><div id="res-emoji-header" class="font-display font-bold text-xs text-gray-600 dark:text-gray-300 mb-2">Prashne #-- 🇮🇳 6/7 (68s)</div><div id="res-emoji-grid" class="text-2xl tracking-widest select-all my-1">🟩🟩🟥🟩🟩🟩🟩</div><div id="res-emoji-footer" class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 mt-2">⚡ Avg: 9.8s/q • 🔥 Streak: 1</div><div id="res-site-link-preview" class="text-[11px] font-bold text-saffron mt-1">https://prashne.in</div></div>
-        <div class="grid grid-cols-3 gap-2 mb-6"><div class="p-2.5 rounded-2xl bg-paper-50 dark:bg-ink-800/60 border border-paper-200 dark:border-ink-700"><div id="res-accuracy" class="font-display font-bold text-base sm:text-lg text-peacock">86%</div><div class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Accuracy</div></div><div class="p-2.5 rounded-2xl bg-paper-50 dark:bg-ink-800/60 border border-paper-200 dark:border-ink-700"><div id="res-avg-speed" class="font-display font-bold text-base sm:text-lg">6.4s</div><div class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Avg Speed</div></div><div class="p-2.5 rounded-2xl bg-paper-50 dark:bg-ink-800/60 border border-paper-200 dark:border-ink-700"><div id="res-streak" class="font-display font-bold text-base sm:text-lg text-saffron">1 🔥</div><div class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Daily Streak</div></div></div>
-        <div class="space-y-2.5"><button onclick="shareWhatsApp()" class="btn-tactile w-full py-3.5 px-5 rounded-2xl bg-[#25D366] hover:bg-[#20BD5A] text-ink-950 font-display font-bold text-sm sm:text-base shadow-arcade flex items-center justify-center gap-2">📱 <span>Share on WhatsApp</span></button><div class="grid grid-cols-2 gap-2.5"><button onclick="shareInstagram()" class="btn-tactile py-3 px-4 rounded-2xl bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white font-display font-bold text-xs sm:text-sm">📸 Instagram</button><button onclick="shareFacebook()" class="btn-tactile py-3 px-4 rounded-2xl bg-[#1877F2] hover:bg-[#166FE5] text-white font-display font-bold text-xs sm:text-sm">f Facebook</button></div><div class="grid grid-cols-2 gap-2.5"><button onclick="shareAnywhere()" class="btn-tactile py-3 px-4 rounded-2xl bg-indigoRoyal hover:bg-indigoRoyal/90 text-white font-display font-bold text-xs sm:text-sm">Share score</button><button onclick="copyScoreText()" class="btn-tactile py-3 px-4 rounded-2xl bg-paper-100 dark:bg-ink-800 hover:bg-paper-200 dark:hover:bg-ink-700 border border-paper-200 dark:border-ink-700 font-display font-bold text-xs sm:text-sm">Copy score</button></div></div>
-      </div>
-      <div class="flex gap-2.5"><button onclick="goHome()" class="btn-tactile w-full py-3.5 px-5 rounded-2xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 font-display font-bold text-sm">Return Home</button></div>
-      <div class="rounded-3xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-5 sm:p-6 space-y-4"><div class="flex items-center justify-between"><h3 class="font-display font-bold text-base sm:text-lg">Question Breakdown</h3><span class="text-xs font-semibold text-gray-500">7 Questions</span></div><div id="review-list" class="space-y-3"></div></div>
-    </section>
-  </main>
-
-  <footer class="w-full max-w-xl mx-auto px-4 py-5 text-center text-xs text-gray-500 dark:text-gray-400"><p>“- If you fail, never give up because F.A.I.L. means \"first Attempt In Learning\" - APJ Abdul Kalam</p></footer>
-
-  <div id="archive-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4"><div class="w-full max-w-md rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-6 shadow-2xl space-y-5 max-h-[85vh] flex flex-col"><div class="flex items-center justify-between"><div><h2 class="font-display font-bold text-xl">Prashne Archive</h2><p class="text-xs text-gray-500">Play previous past editions</p></div><button onclick="closeArchiveModal()" class="p-2 rounded-xl bg-paper-100 dark:bg-ink-800 text-gray-500 hover:text-white">✕</button></div><div id="archive-list" class="space-y-3 overflow-y-auto pr-1 flex-1"></div></div></div>
-  <canvas id="share-canvas" width="1080" height="1920" class="hidden"></canvas>
-
-  <script>
-    const SITE_URL = 'https://prashne-trivia.github.io/';
-    const TIME_LIMIT = 25;
-    const RING_CIRCUMFERENCE = 2 * Math.PI * 20;
-
-    let appState = { theme: 'dark', soundEnabled: true, streak: 0, gamesPlayed: 0, bestScore: null, completedDates: {} };
-    let session = { dateKey: null, issueNumber: 1, questions: [], currentIndex: 0, answers: [], timerInterval: null, questionStartTime: 0, timeRemaining: TIME_LIMIT, isAnswered: false };
-    let availableIssues = {};
-    let synth = null;
-
-    function playTone(type) {
-      if (!appState.soundEnabled || typeof Tone === 'undefined') return;
-      try {
-        if (Tone.context.state !== 'running') Tone.start();
-        if (!synth) { synth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.15, sustain: 0.05, release: 0.2 } }).toDestination(); synth.volume.value = -10; }
-        const now = Tone.now();
-        if (type === 'click') synth.triggerAttackRelease('C5', '32n', now);
-        else if (type === 'correct') { synth.triggerAttackRelease('E5', '16n', now); synth.triggerAttackRelease('G5', '16n', now + 0.08); synth.triggerAttackRelease('C6', '8n', now + 0.16); }
-        else if (type === 'wrong') { synth.triggerAttackRelease('Eb4', '16n', now); synth.triggerAttackRelease('B3', '8n', now + 0.12); }
-        else if (type === 'tick') synth.triggerAttackRelease('A5', '64n', now);
-        else if (type === 'finish') synth.triggerAttackRelease(['C5', 'E5', 'G5', 'B5'], '4n', now);
-      } catch (e) {}
-    }
-
-    function getTodayISTString() {
-      const d = new Date();
-      const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-      const istDate = new Date(utc + (3600000 * 5.5));
-      return `${istDate.getFullYear()}-${String(istDate.getMonth() + 1).padStart(2, '0')}-${String(istDate.getDate()).padStart(2, '0')}`;
-    }
-
-    async function loadManifestAndToday() {
-      try { const res = await fetch('data/config.json'); availableIssues = await res.json(); }
-      catch (e) { availableIssues = { startDate: '2026-11-19', issues: { '2026-11-19': { issueNumber: 1, title: 'Issue #1: Indian Youth Culture', file: 'data/2026-11-19.json' } } }; }
-      initApp();
-    }
-
-    function loadState() {
-      try { const raw = localStorage.getItem('prashne_state_v4'); if (raw) appState = { ...appState, ...JSON.parse(raw) }; } catch(e) {}
-      if (appState.theme === 'dark') document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark');
-      updateSoundIcons();
-    }
-    function saveState() { try { localStorage.setItem('prashne_state_v4', JSON.stringify(appState)); } catch(e) {} }
-    function initApp() { loadState(); renderHomeView(); }
-
-    function renderHomeView() {
-      const todayStr = getTodayISTString();
-      const issueMeta = availableIssues.issues?.[todayStr];
-      document.getElementById('header-streak').textContent = appState.streak;
-      document.getElementById('stat-played').textContent = appState.gamesPlayed;
-      document.getElementById('stat-streak').textContent = `${appState.streak} 🔥`;
-      document.getElementById('stat-best').textContent = appState.bestScore !== null ? `${appState.bestScore} / 7` : '- / 7';
-      if (issueMeta) {
-        document.getElementById('home-issue-badge').textContent = `ISSUE #${issueMeta.issueNumber}`;
-        document.getElementById('home-date-label').textContent = new Date(`${todayStr}T00:00:00`).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-        document.getElementById('btn-play-text').textContent = appState.completedDates[todayStr] ? `View Today's Score (${appState.completedDates[todayStr].score}/7)` : `Play Today's Prashne`;
-      } else {
-        document.getElementById('home-issue-badge').textContent = 'UPCOMING';
-        document.getElementById('home-date-label').textContent = todayStr;
-        document.getElementById('btn-play-text').textContent = `Today's Prashne Is Not Ready Yet`;
-      }
-    }
-
-    function toggleTheme() { playTone('click'); appState.theme = appState.theme === 'dark' ? 'light' : 'dark'; document.documentElement.classList.toggle('dark', appState.theme === 'dark'); saveState(); }
-    function toggleSound() { appState.soundEnabled = !appState.soundEnabled; updateSoundIcons(); if (appState.soundEnabled) playTone('click'); saveState(); }
-    function updateSoundIcons() { const on = document.getElementById('icon-sound-on'); const off = document.getElementById('icon-sound-off'); if (!on || !off) return; if (appState.soundEnabled) { on.classList.remove('hidden'); off.classList.add('hidden'); } else { on.classList.add('hidden'); off.classList.remove('hidden'); } }
-    function showToast(msg, type = 'info') { const c = document.getElementById('toast-container'); const t = document.createElement('div'); t.className = 'px-4 py-2.5 rounded-2xl border shadow-lg font-display font-semibold text-xs text-center bg-ink-900 text-white border-ink-700'; t.textContent = msg; c.appendChild(t); setTimeout(() => t.remove(), 2600); }
-    function switchView(id) { ['view-home', 'view-game', 'view-results'].forEach(v => document.getElementById(v).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    function goHome() { clearInterval(session.timerInterval); renderHomeView(); switchView('view-home'); }
-
-    async function startDailyQuiz() {
-      playTone('click'); const todayStr = getTodayISTString(); const meta = availableIssues.issues?.[todayStr];
-      if (!meta) { showToast("Today's Prashne is not ready yet! Check back tomorrow ⏳", 'warning'); return; }
-      if (appState.completedDates[todayStr]) { renderResultsView(appState.completedDates[todayStr]); switchView('view-results'); return; }
-      try { const res = await fetch(meta.file); const data = await res.json(); setupQuizSession(todayStr, meta.issueNumber, data.questions); }
-      catch (e) { showToast("Could not load today's questions.", 'warning'); }
-    }
-    async function startArchiveQuiz(dateKey) {
-      playTone('click'); closeArchiveModal(); const meta = availableIssues.issues[dateKey]; if (!meta) return;
-      if (appState.completedDates[dateKey]) { renderResultsView(appState.completedDates[dateKey]); switchView('view-results'); return; }
-      try { const res = await fetch(meta.file); const data = await res.json(); setupQuizSession(dateKey, meta.issueNumber, data.questions); }
-      catch(e) { showToast('Could not load archive issue.', 'warning'); }
-    }
-    function setupQuizSession(dateKey, issueNum, questions) {
-      session = { dateKey, issueNumber: issueNum, questions, currentIndex: 0, answers: [], timerInterval: null, questionStartTime: 0, timeRemaining: TIME_LIMIT, isAnswered: false };
-      document.getElementById('game-mode-badge').textContent = `ISSUE #${issueNum}`; switchView('view-game'); renderQuestion();
-    }
-    function openArchiveModal() {
-      playTone('click'); const list = document.getElementById('archive-list'); list.innerHTML = '';
-      Object.entries(availableIssues.issues || {}).forEach(([dateStr, meta]) => {
-        const isPlayed = !!appState.completedDates[dateStr]; const item = document.createElement('div');
-        item.className = 'p-4 rounded-2xl bg-paper-50 dark:bg-ink-800/80 border border-paper-200 dark:border-ink-700 flex items-center justify-between gap-3';
-        item.innerHTML = `<div><div class="font-display font-bold text-sm">Issue #${meta.issueNumber} (${dateStr})</div><p class="text-xs text-gray-500">${meta.title}</p></div><button onclick="startArchiveQuiz('${dateStr}')" class="btn-tactile py-2 px-4 rounded-xl bg-saffron text-white font-display font-bold text-xs cursor-pointer">${isPlayed ? 'Review' : 'Play'}</button>`;
-        list.appendChild(item);
-      });
-      document.getElementById('archive-modal').classList.remove('hidden');
-    }
-    function closeArchiveModal() { document.getElementById('archive-modal').classList.add('hidden'); }
-
-    function renderProgressPills() {
-      const c = document.getElementById('progress-pills'); c.innerHTML = '';
-      for (let i = 0; i < 7; i++) {
-        const p = document.createElement('div'); let cls = 'h-2 rounded-full transition-all ';
-        if (i < session.answers.length) { const a = session.answers[i]; cls += a.isTimeout ? 'bg-amber-400' : (a.isCorrect ? 'bg-peacock' : 'bg-rose-500'); }
-        else if (i === session.currentIndex) cls += 'bg-saffron scale-y-125'; else cls += 'bg-paper-200 dark:bg-ink-700';
-        p.className = cls; c.appendChild(p);
-      }
-    }
-    function renderQuestion() {
-      clearInterval(session.timerInterval); session.isAnswered = false; session.timeRemaining = TIME_LIMIT; session.questionStartTime = performance.now();
-      const qObj = session.questions[session.currentIndex];
-      document.getElementById('game-q-counter').textContent = `Q${session.currentIndex + 1} of 7`;
-      document.getElementById('q-text').textContent = qObj.question; document.getElementById('feedback-box').classList.add('hidden');
-      const optContainer = document.getElementById('options-container'); optContainer.innerHTML = '';
-      qObj.options.forEach((optText, idx) => {
-        const btn = document.createElement('button'); btn.id = `option-btn-${idx}`; btn.onclick = () => selectOption(idx);
-        btn.className = 'btn-tactile w-full text-left p-3.5 sm:p-4 rounded-2xl bg-paper-50 dark:bg-ink-800/90 hover:bg-paper-100 dark:hover:bg-ink-700 border-2 border-paper-200 dark:border-ink-700 flex items-center gap-3 group transition-colors';
-        btn.innerHTML = `<span class="w-8 h-8 rounded-xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-600 font-display font-bold text-sm flex items-center justify-center shrink-0">${['A', 'B', 'C', 'D'][idx]}</span><span class="font-semibold text-sm sm:text-base flex-1">${optText}</span><span id="option-status-${idx}" class="font-bold text-base shrink-0"></span>`;
-        optContainer.appendChild(btn);
-      });
-      renderProgressPills(); startTimer();
-    }
-    function startTimer() {
-      const ring = document.getElementById('timer-ring'); const timerText = document.getElementById('timer-text');
-      ring.style.strokeDasharray = `${RING_CIRCUMFERENCE}`; ring.style.strokeDashoffset = '0'; ring.style.stroke = '#00A896'; timerText.textContent = TIME_LIMIT;
-      session.timerInterval = setInterval(() => {
-        if (session.isAnswered) { clearInterval(session.timerInterval); return; }
-        const elapsed = (performance.now() - session.questionStartTime) / 1000; const remaining = Math.max(0, TIME_LIMIT - elapsed);
-        ring.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - remaining / TIME_LIMIT); timerText.textContent = Math.ceil(remaining);
-        if (remaining <= 5) ring.style.stroke = '#F43F5E'; else if (remaining <= 10) ring.style.stroke = '#F59E0B';
-        if (remaining <= 0) { clearInterval(session.timerInterval); handleTimeout(); }
-      }, 60);
-    }
-    function handleTimeout() {
-      if (session.isAnswered) return; session.isAnswered = true; playTone('wrong');
-      const qObj = session.questions[session.currentIndex]; session.answers.push({ selectedIndex: null, isCorrect: false, isTimeout: true, timeTaken: TIME_LIMIT });
-      highlightAnswers(null, qObj.correctIndex); showFeedback('timeout', qObj.fact); renderProgressPills();
-    }
-    function selectOption(selectedIdx) {
-      if (session.isAnswered) return; session.isAnswered = true; clearInterval(session.timerInterval);
-      const elapsed = Math.min(TIME_LIMIT, Math.max(0.4, (performance.now() - session.questionStartTime) / 1000)); const qObj = session.questions[session.currentIndex]; const isCorrect = selectedIdx === qObj.correctIndex;
-      if (isCorrect) playTone('correct'); else playTone('wrong');
-      session.answers.push({ selectedIndex: selectedIdx, isCorrect, isTimeout: false, timeTaken: Number(elapsed.toFixed(1)) });
-      highlightAnswers(selectedIdx, qObj.correctIndex); showFeedback(isCorrect ? 'correct' : 'wrong', qObj.fact, elapsed); renderProgressPills();
-    }
-    function highlightAnswers(selectedIdx, correctIdx) {
-      for (let i = 0; i < 4; i++) {
-        const btn = document.getElementById(`option-btn-${i}`); const statusEl = document.getElementById(`option-status-${i}`); if (!btn || !statusEl) continue;
-        btn.disabled = true;
-        if (i === correctIdx) { btn.classList.add('border-peacock', 'bg-peacock/15'); statusEl.textContent = '✓'; statusEl.className = 'text-peacock font-bold'; }
-        else if (i === selectedIdx && selectedIdx !== correctIdx) { btn.classList.add('border-rose-500', 'bg-rose-500/15'); statusEl.textContent = '✕'; statusEl.className = 'text-rose-500 font-bold'; }
-        else btn.classList.add('opacity-50');
-      }
-    }
-    function showFeedback(status, factText, elapsed = 0) {
-      const box = document.getElementById('feedback-box'); box.classList.remove('hidden');
-      document.getElementById('feedback-fact').textContent = factText;
-      const nextButton = document.getElementById('feedback-next-button');
-      if (!nextButton) {
-        const button = document.createElement('button'); button.id = 'feedback-next-button'; button.type = 'button'; button.onclick = nextQuestion;
-        button.className = 'btn-tactile mt-4 w-full py-3 px-5 rounded-xl bg-saffron hover:bg-saffron-hover text-white font-display font-bold text-sm';
-        button.textContent = session.currentIndex === session.questions.length - 1 ? 'See Results' : 'Next';
-        box.appendChild(button);
-      } else {
-        nextButton.textContent = session.currentIndex === session.questions.length - 1 ? 'See Results' : 'Next';
-      }
-    }
-    function nextQuestion() {
-      if (!session.isAnswered) return;
-      if (session.currentIndex < session.questions.length - 1) { session.currentIndex++; renderQuestion(); } else finishQuiz();
-    }
-    function getScorePhrase(score) {
-      switch (score) {
-        case 0: return 'That required some latent.';
-        case 1: return 'There are no accidents. — Master Oogway';
-        case 2: return 'Agle attempt pe toh pakka crack karega.';
-        case 3: return 'All is well bolo, All is well.';
-        case 4: return 'hehe, america got independence on 4/7/1776';
-        case 5: return 'Boys played well!';
-        case 6: return 'we were on the verge of greatness, we were this close.';
-        case 7: return 'Thala for a reason';
-        default: return 'Solid effort!';
-      }
-    }
-    function finishQuiz() {
-      playTone('finish'); const score = session.answers.filter(a => a.isCorrect).length;
-      const totalTime = Number(session.answers.reduce((acc, a) => acc + a.timeTaken, 0).toFixed(1)); const avgTime = Number((totalTime / 7).toFixed(1));
-      const punchline = getScorePhrase(score); const emojiBlocks = session.answers.map(a => a.isTimeout ? '🟨' : (a.isCorrect ? '🟩' : '🟥')).join('');
-      appState.gamesPlayed += 1; if (appState.bestScore === null || score > appState.bestScore) appState.bestScore = score;
-      const todayStr = getTodayISTString(); if (session.dateKey === todayStr && !appState.completedDates[todayStr]) appState.streak += 1;
-      const res = { date: session.dateKey, issueNumber: session.issueNumber, score, totalTime, avgTime, accuracy: Math.round((score / 7) * 100), streak: appState.streak, punchline, emojiBlocks, questions: session.questions, answers: session.answers };
-      appState.completedDates[session.dateKey] = res; saveState(); renderResultsView(res); switchView('view-results');
-    }
-    let latestRes = null;
-    function renderResultsView(res) {
-      latestRes = res;
-      document.getElementById('res-rank-title').textContent = res.punchline; document.getElementById('res-score').textContent = res.score;
-      document.getElementById('res-subtitle').textContent = `Prashne #${res.issueNumber} • Avg Speed: ${res.avgTime}s/q`;
-      document.getElementById('res-emoji-header').textContent = `Prashne #${res.issueNumber} 🇮🇳 ${res.score}/7 (${Math.round(res.totalTime)}s)`;
-      document.getElementById('res-emoji-grid').textContent = res.emojiBlocks; document.getElementById('res-emoji-footer').textContent = `⚡ Avg: ${res.avgTime}s/q • 🔥 Streak: ${res.streak}`;
-      document.getElementById('res-accuracy').textContent = `${res.accuracy}%`; document.getElementById('res-avg-speed').textContent = `${res.avgTime}s`; document.getElementById('res-streak').textContent = `${res.streak} 🔥`;
-      const list = document.getElementById('review-list'); list.innerHTML = '';
-      const letters = ['A', 'B', 'C', 'D'];
-      res.questions.forEach((q, idx) => {
-        const ans = res.answers[idx]; const item = document.createElement('div');
-        item.className = 'p-4 rounded-2xl bg-paper-50 dark:bg-ink-800/70 border border-paper-200 dark:border-ink-700 space-y-2';
-        item.innerHTML = `<div class="flex items-center justify-between"><span class="font-bold text-xs text-gray-500">Q${idx + 1}/7</span><span class="text-xs font-bold ${ans.isCorrect ? 'text-peacock' : 'text-rose-500'}">${ans.isCorrect ? 'Correct' : ans.isTimeout ? 'Time out' : 'Incorrect'}</span></div><p class="font-display font-bold text-sm">${q.question}</p><p class="text-xs text-peacock font-semibold">Correct: ${letters[q.correctIndex]}. ${q.options[q.correctIndex]}</p><p class="text-xs text-gray-500">💡 ${q.fact}</p>`;
-        list.appendChild(item);
-      });
-    }
-    function buildShareMessage(res) { return [`Prashne #${res.issueNumber} 🇮🇳 ${res.score}/7`, `"${res.punchline}"`, res.emojiBlocks, `⚡ Avg: ${res.avgTime}s/q | 🔥 Streak: ${res.streak}`, `Play now 👉 ${SITE_URL}`].join('\n'); }
-    function copyTextSilently(text) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.focus(); ta.select(); try { document.execCommand('copy'); } catch(e) {} document.body.removeChild(ta); }
-    function shareWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(buildShareMessage(latestRes))}`, '_blank'); }
-    function shareFacebook() { copyTextSilently(buildShareMessage(latestRes)); window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}`, '_blank'); }
-    function copyScoreText() { copyTextSilently(buildShareMessage(latestRes)); showToast('Score & link copied! 📋', 'success'); }
-    function shareAnywhere() { if (navigator.share) navigator.share({ title: 'Prashne', text: buildShareMessage(latestRes), url: SITE_URL }); else copyScoreText(); }
-    function shareInstagram() { copyTextSilently(buildShareMessage(latestRes)); showToast('Caption copied! Paste into your Instagram Story 📸', 'info'); }
-    window.addEventListener('DOMContentLoaded', loadManifestAndToday);
-  </script>
+  <!-- Plain scripts (no modules) so this also works when opened as a local file. Order matters. -->
+  <script src="js/core/config.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/core/data.js"></script>
+  <script src="js/core/sound.js"></script>
+  <script src="js/core/ui.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/home.js"></script>
+  <script src="js/components/game.js"></script>
+  <script src="js/components/results.js"></script>
+  <script src="js/components/share.js"></script>
+  <script src="js/components/archive.js"></script>
+  <script src="js/components/footer.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

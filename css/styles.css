@@ -1,0 +1,16 @@
+/* Prashne global styles (Tailwind handles most styling) */
+    body { -webkit-tap-highlight-color: transparent; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+    .bg-editorial-grid-dark { background-color: #0B0D13; background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px); background-size: 20px 20px; }
+    .bg-editorial-grid-light { background-color: #FAF8F5; background-image: radial-gradient(rgba(18, 21, 30, 0.07) 1px, transparent 1px); background-size: 20px 20px; }
+    .btn-tactile { transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease; }
+    .btn-tactile:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.25) !important; }
+    .timer-ring-circle { transition: stroke-dashoffset 0.1s linear, stroke 0.3s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 9999px; }
+  
+    /* Game mode: lock page to the viewport so the whole question fits without scrolling */
+    body.game-active { height: 100dvh; overflow: hidden; }
+    body.game-active main { padding-top: 0.5rem; padding-bottom: 0.75rem; justify-content: flex-start; min-height: 0; }
+    body.game-active #app-footer { display: none; }
+    body.game-active header { padding-top: 0.5rem; padding-bottom: 0.25rem; }
