@@ -1,6 +1,6 @@
-// Questions for 2026-11-21 (Indian History)
+// Questions for 2026-11-22 (Indian History)
 window.PRASHNE_DAYS = window.PRASHNE_DAYS || {};
-window.PRASHNE_DAYS['2026-11-21'] = {
+window.PRASHNE_DAYS['2026-11-22'] = {
   "questions": [
     {
       "question": "Around 261 BCE, a war in Kalinga left huge numbers dead. The victorious Mauryan emperor was so shaken that he turned to non-violence and had his messages carved on rocks and pillars across his empire. Who was he?",
