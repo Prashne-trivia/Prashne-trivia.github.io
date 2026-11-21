@@ -1,6 +1,6 @@
-// Questions for 2026-11-22 (Accidental Inventions)
+// Questions for 2026-11-21 (Accidental Inventions)
 window.PRASHNE_DAYS = window.PRASHNE_DAYS || {};
-window.PRASHNE_DAYS['2026-11-22'] = {
+window.PRASHNE_DAYS['2026-11-21'] = {
   "questions": [
     {
       "question": "In 1945, radar engineer Percy Spencer stood near a magnetron, a radar tube, and felt a candy bar melt in his pocket. He then tested popcorn kernels nearby. What did this accident lead him to invent?",
