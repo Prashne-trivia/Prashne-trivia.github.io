@@ -55,7 +55,7 @@ window.PRASHNE_DAYS['2026-11-23'] = {
         "Silver Arrows"
       ],
       "correctIndex": 3,
-      "fact": "Rival Auto Union also raced in bare silver in the 1930s, and the two German teams dominated Grand Prix racing until the war. Some historians think the paint-scraping story may be partly legend, but it remains the most famous origin of the name."
+      "fact": "Rival Auto Union (later known as audi) also raced in bare silver in the 1930s, and the two German teams dominated Grand Prix racing until the war. Some historians think the paint-scraping story may be partly legend, but it remains the most famous origin of the name."
     },
     {
       "question": "Which statesman was among the first three recipients of the Bharat Ratna in 1954, alongside C.V. Raman and S. Radhakrishnan? He was also the last Governor-General of India, and the only Indian to hold that post, and was known for his role in the freedom struggle and his stance against untouchability.",
@@ -72,7 +72,7 @@ window.PRASHNE_DAYS['2026-11-23'] = {
       "question": "In 2024, North Korea sent balloons carrying trash to South Korea. It was retaliation for South Korean activists sending anti-regime leaflets, US dollars, and USB sticks filled with what?",
       "options": [
         "Anime",
-        "K-pop and K-dramas",
+        "K-pop music and K-dramas",
         "AI videos of Kim",
         "Memes about North Korea"
       ],
