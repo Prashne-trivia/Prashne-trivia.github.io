@@ -36,7 +36,7 @@ window.PRASHNE_DAYS['2026-11-24'] = {
       "fact": "The cards were first used at the 1970 World Cup in Mexico, so that players and fans could follow a referee's decision without a shared language."
     },
     {
-      "question": "In 2015-16, some bookmakers offered 5,000-1 odds against Leicester City winning the Premier League, as long as the odds on Elvis being found alive. They went on to win the title. Who was their manager?",
+      "question": "In 2015-16, some bookmakers offered 5,000-1 odds against Leicester City winning the Premier League, as long as the odds on Elvis being found alive. They went on to win the title. Who was their Italian manager?",
       "options": [
         "Claudio Ranieri",
         "Pep Guardiola",
@@ -69,7 +69,7 @@ window.PRASHNE_DAYS['2026-11-24'] = {
       "fact": "The arc is drawn 9.15 m (10 yards) from the penalty spot. Players other than the kicker and goalkeeper must stay outside it and the box until the ball is kicked."
     },
     {
-      "question": "In 1911, a Kolkata club beat a British army side, the East Yorkshire Regiment, 2-1 in a famous final, with many of its players barefoot. It became the first Indian club to win this tournament. Which trophy?",
+      "question": "In 1911, a Kolkata club beat a British army side, the East Yorkshire Regiment, 2-1 in a famous final, with many of its players barefoot. It became the first All Indian club to win this tournament conducted by Indian Football Association. Which trophy?",
       "options": [
         "Durand Cup",
         "Santosh Trophy",
