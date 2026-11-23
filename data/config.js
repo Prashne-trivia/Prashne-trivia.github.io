@@ -21,6 +21,12 @@ window.PRASHNE_CONFIG = {
       "issueNumber": 4,
       "title": "Issue #4: A mix",
       "file": "data/2026-11-23.js"
+    },
+      "2026-11-24": {
+      "issueNumber": 5,
+      "title": "Issue #4: Football",
+      "file": "data/2026-11-23.js"
     }
+    
   }
 };
