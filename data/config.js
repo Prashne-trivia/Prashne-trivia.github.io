@@ -17,14 +17,14 @@ window.PRASHNE_CONFIG = {
       "title": "Issue #3: Indian History",
       "file": "data/2026-11-22.js"
     },
-      "2026-11-23": {
+    "2026-11-23": {
       "issueNumber": 4,
       "title": "Issue #4: A mix",
       "file": "data/2026-11-23.js"
     },
-      "2026-11-24": {
+    "2026-11-24": {
       "issueNumber": 5,
-      "title": "Issue #4: Football",
+      "title": "Issue #5: Football",
       "file": "data/2026-11-24.js"
     }
     
