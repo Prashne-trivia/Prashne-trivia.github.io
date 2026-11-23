@@ -1,6 +1,6 @@
 // App-wide constants
 const SITE_URL = 'https://prashne-trivia.github.io/';
-const TIME_LIMIT = 25;                       // seconds per question
+const TIME_LIMIT = 40;                       // seconds per question
 const RING_CIRCUMFERENCE = 2 * Math.PI * 20; // timer ring (r=20)
 const STORAGE_KEY = 'prashne_state_v4';
 
