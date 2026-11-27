@@ -7,9 +7,9 @@ const ResultsComponent = {
     <section id="view-results" class="hidden space-y-4 animate-pop">
       <div class="rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-5 text-center shadow-lg">
         <div class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-saffron/15 text-saffron border border-saffron/30 mb-3"><span id="res-rank-title">Done!</span></div>
-        <div class="font-display font-bold text-5xl sm:text-6xl tracking-tight"><span id="res-points" class="text-saffron">0.00</span><span class="text-gray-400 dark:text-gray-600 text-xl sm:text-2xl"> / 200</span></div>
+        <div class="font-display font-bold text-5xl sm:text-6xl tracking-tight"><span id="res-points" class="text-saffron">0.00</span><span id="res-max" class="text-gray-400 dark:text-gray-600 text-xl sm:text-2xl"> / 300</span></div>
         <p id="res-subtitle" class="text-xs text-gray-500 mt-1"></p>
-        <p id="res-bonus" class="hidden text-xs font-bold text-peacock mt-1">+25 perfect-round bonus</p>
+        <p id="res-bonus" class="hidden text-xs font-bold text-peacock mt-1"><span id="res-bonus-text">+20</span> perfect-round bonus</p>
         <div id="res-rank-box" class="mt-4 p-3 rounded-2xl bg-paper-100 dark:bg-ink-800 border border-paper-200 dark:border-ink-700 text-sm"></div>
         <div class="mt-4 p-4 rounded-2xl bg-paper-100 dark:bg-ink-800 border border-paper-200 dark:border-ink-700 max-w-xs mx-auto">
           <div id="res-emoji-header" class="font-display font-bold text-xs mb-2"></div>
@@ -39,6 +39,8 @@ const ResultsComponent = {
     const $ = (id) => document.getElementById(id);
     $('res-rank-title').textContent = res.punchline;
     $('res-points').textContent = fmtPoints(res.points);
+    $('res-max').textContent = ` / ${MAX_POINTS}`;
+    $('res-bonus-text').textContent = `+${Number(res.bonus)}`;
     $('res-subtitle').textContent = `Prashne #${res.issue_number} • ${res.correct_count}/7 correct • ${fmtTime(res.total_time)} total`;
     $('res-bonus').classList.toggle('hidden', !(Number(res.bonus) > 0));
     $('res-emoji-header').textContent = `Prashne #${res.issue_number} • ${fmtPoints(res.points)} pts`;
