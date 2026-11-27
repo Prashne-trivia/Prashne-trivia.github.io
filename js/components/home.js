@@ -28,18 +28,18 @@ const HomeComponent = {
     </section>`,
   mount() { document.getElementById('app-main').insertAdjacentHTML('beforeend', this.html); },
 
-  // Refresh the home view: header streak, stats, and today's issue / play button text
+  // Refresh the home view from server data (issue list + your stats)
   render() {
     const todayStr = getTodayKey();
     const issueMeta = availableIssues.issues?.[todayStr];
-    document.getElementById('header-streak').textContent = appState.streak;
-    document.getElementById('stat-played').textContent = appState.gamesPlayed;
-    document.getElementById('stat-streak').textContent = `${appState.streak} 🔥`;
-    document.getElementById('stat-best').textContent = appState.bestScore !== null ? `${appState.bestScore} / 7` : '- / 7';
+    document.getElementById('header-streak').textContent = myStats.streak || 0;
+    document.getElementById('stat-played').textContent = myStats.played || 0;
+    document.getElementById('stat-streak').textContent = `${myStats.streak || 0} 🔥`;
+    document.getElementById('stat-best').textContent = myStats.best_correct != null ? `${myStats.best_correct} / 7` : '- / 7';
     if (issueMeta) {
       document.getElementById('home-issue-badge').textContent = `ISSUE #${issueMeta.issueNumber}`;
       document.getElementById('home-date-label').textContent = new Date(`${todayStr}T00:00:00`).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-      document.getElementById('btn-play-text').textContent = appState.completedDates[todayStr] ? `View Today's Score (${appState.completedDates[todayStr].score}/7)` : `Play Today's Prashne`;
+      document.getElementById('btn-play-text').textContent = issueMeta.finished ? `View Today's Score` : `Play Today's Prashne`;
     } else {
       document.getElementById('home-issue-badge').textContent = 'UPCOMING';
       document.getElementById('home-date-label').textContent = todayStr;

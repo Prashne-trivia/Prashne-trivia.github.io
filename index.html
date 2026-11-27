@@ -13,6 +13,7 @@
   <!-- Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
   <!-- Theme + styles -->
   <script src="js/tailwind-config.js"></script>
@@ -21,23 +22,27 @@
 
 <body class="min-h-screen bg-editorial-grid-light dark:bg-editorial-grid-dark text-ink-900 dark:text-paper-50 transition-colors duration-200 selection:bg-saffron selection:text-white flex flex-col">
   <!-- Mount points: filled by components in js/components/ -->
-  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2 w-full max-w-sm px-4"></div>
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[60] pointer-events-none flex flex-col items-center gap-2 w-full max-w-sm px-4"></div>
   <div id="app-header"></div>
   <main id="app-main" class="flex-1 w-full max-w-xl mx-auto px-4 py-4 flex flex-col justify-center"></main>
   <div id="app-footer-slot"></div>
   <div id="app-modal-slot"></div>
 
-  <!-- Plain scripts (no modules) so this also works when opened as a local file. Order matters. -->
+  <!-- Plain scripts (no modules). Order matters. -->
   <script src="js/core/config.js"></script>
   <script src="js/core/state.js"></script>
-  <script src="js/core/data.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/core/auth.js"></script>
   <script src="js/core/sound.js"></script>
   <script src="js/core/ui.js"></script>
   <script src="js/components/header.js"></script>
   <script src="js/components/home.js"></script>
   <script src="js/components/game.js"></script>
   <script src="js/components/results.js"></script>
+  <script src="js/components/scorecard.js"></script>
   <script src="js/components/share.js"></script>
+  <script src="js/components/leaderboard.js"></script>
+  <script src="js/components/login.js"></script>
   <script src="js/components/archive.js"></script>
   <script src="js/components/footer.js"></script>
   <script src="js/app.js"></script>

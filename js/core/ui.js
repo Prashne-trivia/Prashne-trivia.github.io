@@ -18,3 +18,10 @@ function switchView(id) {
   document.body.classList.toggle('game-active', id === 'view-game');
   window.scrollTo({ top: 0 });
 }
+
+// Escape text before putting it into innerHTML (nicknames and DB text are never trusted)
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+const fmtPoints = (p) => Number(p).toFixed(2);   // 24.55
+const fmtTime = (t) => `${Number(t).toFixed(1)}s`;
