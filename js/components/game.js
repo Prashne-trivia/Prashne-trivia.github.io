@@ -1,5 +1,6 @@
 /**
  * Game view: header card (issue, counter, timer, progress), question, options, feedback.
+ * Questions come from the server one at a time; answers are checked and timed on the server.
  * Layout is a flex column sized to the viewport (see body.game-active in css/styles.css)
  * so the question, options and explanation all fit without page scrolling.
  */
@@ -44,69 +45,77 @@ const GameComponent = {
     </section>`,
   mount() { document.getElementById('app-main').insertAdjacentHTML('beforeend', this.html); },
 
-  // Colored dots showing answered (green/red/amber), current (orange) and upcoming questions
+  // Progress dots: green = correct, red = wrong, amber = timeout, orange = current, grey = upcoming
   renderProgressPills() {
     const c = document.getElementById('progress-pills'); c.innerHTML = '';
     for (let i = 0; i < 7; i++) {
       const p = document.createElement('div'); let cls = 'h-2 rounded-full transition-all ';
-      if (i < session.answers.length) { const a = session.answers[i]; cls += a.isTimeout ? 'bg-amber-400' : (a.isCorrect ? 'bg-peacock' : 'bg-rose-500'); }
-      else if (i === session.currentIndex) cls += 'bg-saffron scale-y-125';
+      const a = session.answers[i];
+      if (a) cls += a.unknown ? 'bg-gray-400' : (a.timeout ? 'bg-amber-400' : (a.correct ? 'bg-peacock' : 'bg-rose-500'));
+      else if (i === session.position - 1) cls += 'bg-saffron scale-y-125';
       else cls += 'bg-paper-200 dark:bg-ink-700';
       p.className = cls; c.appendChild(p);
     }
   },
 
-  // Show the current question and its options, reset the timer
-  renderQuestion() {
+  // Show a question sent by the server (it never includes the answer) and run the countdown
+  renderQuestion(q) {
     clearInterval(session.timerInterval);
-    session.isAnswered = false; session.timeRemaining = TIME_LIMIT; session.questionStartTime = performance.now();
-    const qObj = session.questions[session.currentIndex];
-    document.getElementById('game-q-counter').textContent = `Q${session.currentIndex + 1} of 7`;
-    document.getElementById('q-text').textContent = qObj.question;
+    session.isAnswered = false; session.position = q.position;
+    while (session.answers.length < q.position - 1) session.answers.push({ unknown: true });   // resumed game
+    // The server owns the real clock; this only drives the on-screen countdown
+    session.questionStartTime = performance.now() - (TIME_LIMIT - q.seconds_left) * 1000;
+    document.getElementById('game-q-counter').textContent = `Q${q.position} of ${q.total}`;
+    document.getElementById('q-text').textContent = q.question;
     document.getElementById('feedback-box').classList.add('hidden');
     const optContainer = document.getElementById('options-container'); optContainer.innerHTML = '';
-    qObj.options.forEach((optText, idx) => {
-      const btn = document.createElement('button'); btn.id = `option-btn-${idx}`; btn.onclick = () => this.selectOption(idx);
+    q.options.forEach((optText, idx) => {
+      const btn = document.createElement('button'); btn.id = `option-btn-${idx}`; btn.onclick = () => this.submit(idx);
       btn.className = 'btn-tactile w-full text-left p-2.5 rounded-2xl bg-paper-50 dark:bg-ink-800/90 hover:bg-paper-100 dark:hover:bg-ink-700 border-2 border-paper-200 dark:border-ink-700 flex items-center gap-3 transition-colors';
-      btn.innerHTML = `<span class="w-7 h-7 rounded-lg bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-600 font-display font-bold text-xs flex items-center justify-center shrink-0">${['A', 'B', 'C', 'D'][idx]}</span><span class="font-semibold text-sm flex-1">${optText}</span><span id="option-status-${idx}" class="font-bold text-base shrink-0"></span>`;
+      btn.innerHTML = `<span class="w-7 h-7 rounded-lg bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-600 font-display font-bold text-xs flex items-center justify-center shrink-0">${['A', 'B', 'C', 'D'][idx]}</span><span class="font-semibold text-sm flex-1">${escapeHtml(optText)}</span><span id="option-status-${idx}" class="font-bold text-base shrink-0"></span>`;
       optContainer.appendChild(btn);
     });
     this.renderProgressPills(); this.startTimer();
   },
 
-  // 25s countdown ring; turns amber then red as time runs out
+  // Countdown ring; turns amber then red as time runs out. At 0 the server is told "no answer".
   startTimer() {
     const ring = document.getElementById('timer-ring'); const timerText = document.getElementById('timer-text');
-    ring.style.strokeDasharray = `${RING_CIRCUMFERENCE}`; ring.style.strokeDashoffset = '0'; ring.style.stroke = '#00A896'; timerText.textContent = TIME_LIMIT;
+    ring.style.strokeDasharray = `${RING_CIRCUMFERENCE}`;
+    clearInterval(session.timerInterval);
     session.timerInterval = setInterval(() => {
       if (session.isAnswered) { clearInterval(session.timerInterval); return; }
       const elapsed = (performance.now() - session.questionStartTime) / 1000;
       const remaining = Math.max(0, TIME_LIMIT - elapsed);
       ring.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - remaining / TIME_LIMIT);
+      ring.style.stroke = remaining <= 5 ? '#F43F5E' : (remaining <= 10 ? '#F59E0B' : '#00A896');
       timerText.textContent = Math.ceil(remaining);
-      if (remaining <= 5) ring.style.stroke = '#F43F5E'; else if (remaining <= 10) ring.style.stroke = '#F59E0B';
-      if (remaining <= 0) { clearInterval(session.timerInterval); this.handleTimeout(); }
+      if (remaining <= 0) { clearInterval(session.timerInterval); this.submit(null); }
     }, 60);
   },
 
-  handleTimeout() {
-    if (session.isAnswered) return;
-    session.isAnswered = true; playTone('wrong');
-    const qObj = session.questions[session.currentIndex];
-    session.answers.push({ selectedIndex: null, isCorrect: false, isTimeout: true, timeTaken: TIME_LIMIT });
-    this.highlightAnswers(null, qObj.correctIndex); this.showFeedback('timeout', qObj.fact); this.renderProgressPills();
-  },
-
-  // Player tapped an option
-  selectOption(selectedIdx) {
+  // Send the answer (idx 0-3, or null for timeout). The server checks it and measures the time.
+  async submit(selectedIdx) {
     if (session.isAnswered) return;
     session.isAnswered = true; clearInterval(session.timerInterval);
-    const elapsed = Math.min(TIME_LIMIT, Math.max(0.4, (performance.now() - session.questionStartTime) / 1000));
-    const qObj = session.questions[session.currentIndex];
-    const isCorrect = selectedIdx === qObj.correctIndex;
-    playTone(isCorrect ? 'correct' : 'wrong');
-    session.answers.push({ selectedIndex: selectedIdx, isCorrect, isTimeout: false, timeTaken: Number(elapsed.toFixed(1)) });
-    this.highlightAnswers(selectedIdx, qObj.correctIndex); this.showFeedback(isCorrect ? 'correct' : 'wrong', qObj.fact); this.renderProgressPills();
+    document.querySelectorAll('#options-container button').forEach(b => { b.disabled = true; });
+    let r;
+    try { r = await rpc('submit_answer', { p_attempt: session.attemptId, p_selected: selectedIdx }); }
+    catch (e) {
+      const code = errorCode(e);
+      if (code === 'no_open_question' || code === 'already_finished') return nextQuestion(true);   // answer already counted
+      session.isAnswered = false; showToast('Connection problem. Please try again.');
+      document.querySelectorAll('#options-container button').forEach(b => { b.disabled = false; });
+      this.startTimer(); return;
+    }
+    const timedOut = selectedIdx === null || Number(r.elapsed) >= TIME_LIMIT;
+    const status = timedOut ? 'timeout' : (r.correct ? 'correct' : 'wrong');
+    playTone(status === 'correct' ? 'correct' : 'wrong');
+    session.answers[session.position - 1] = { correct: r.correct, timeout: timedOut };
+    session.finished = r.finished;
+    this.highlightAnswers(timedOut ? null : selectedIdx, r.correct_index);
+    this.showFeedback(status, r);
+    this.renderProgressPills();
   },
 
   // Mark the correct option green, a wrong pick red, dim the rest
@@ -121,10 +130,10 @@ const GameComponent = {
     }
   },
 
-  // Show result title/icon, the fun fact, and the Next / See Results button
-  showFeedback(status, factText) {
+  // Result title/icon (with points earned), the fact, and the Next / See Results button
+  showFeedback(status, r) {
     const cfg = {
-      correct: { title: 'Spot on!', icon: '✓', cls: 'bg-peacock/20 text-peacock' },
+      correct: { title: `Spot on! +${fmtPoints(r.points)}`, icon: '✓', cls: 'bg-peacock/20 text-peacock' },
       wrong:   { title: 'Not quite', icon: '✕', cls: 'bg-rose-500/20 text-rose-500' },
       timeout: { title: "Time's up", icon: '⏱', cls: 'bg-amber-400/20 text-amber-500' },
     }[status];
@@ -133,13 +142,21 @@ const GameComponent = {
     const icon = document.getElementById('feedback-icon');
     icon.textContent = cfg.icon;
     icon.className = `w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-bold text-xs mt-0.5 ${cfg.cls}`;
-    document.getElementById('feedback-fact').textContent = factText;
-    document.getElementById('feedback-next-button').textContent = session.currentIndex === session.questions.length - 1 ? 'See Results' : 'Next';
+    document.getElementById('feedback-fact').textContent = r.fact;
+    const btn = document.getElementById('feedback-next-button');
+    btn.textContent = r.finished ? 'See Results' : 'Next'; btn.disabled = false;
   },
 };
-// Called from inline onclick in the feedback box
-function nextQuestion() {
-  if (!session.isAnswered) return;
-  if (session.currentIndex < session.questions.length - 1) { session.currentIndex++; GameComponent.renderQuestion(); }
-  else finishQuiz();
+
+// Next question (asks the server, which starts that question's clock) or the results after question 7.
+async function nextQuestion(force) {
+  if (!force && !session.isAnswered) return;
+  if (session.finished) { finishQuiz(); return; }
+  const btn = document.getElementById('feedback-next-button'); btn.disabled = true;
+  try {
+    const st = await rpc('next_question', { p_attempt: session.attemptId });
+    if (st.state === 'finished') { finishQuiz(); return; }
+    GameComponent.renderQuestion(st);
+  } catch (e) { showToast('Connection problem. Please try again.'); }
+  btn.disabled = false;
 }

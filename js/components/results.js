@@ -1,44 +1,73 @@
 /**
- * Results view: score, shareable summary, share buttons, question breakdown
- * Edit the markup below; logic for this component lives in this file too.
+ * Results view: points, rank, share button, and a "what you learned" review of every question.
+ * Data comes from the server (get_result), so it matches what the leaderboard uses.
  */
 const ResultsComponent = {
-  html: `<section id="view-results" class="hidden space-y-5 animate-pop">
-      <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-6 sm:p-7 shadow-xl text-center">
-        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-saffron via-peacock to-indigoRoyal"></div>
-        <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-saffron/15 text-saffron border border-saffron/30 mb-3"><span id="res-rank-emoji">🏆</span><span id="res-rank-title">Daily Champ</span></div>
-        <div class="my-2"><div class="font-display font-bold text-5xl sm:text-6xl tracking-tight"><span id="res-score" class="text-saffron">6</span><span class="text-gray-400 dark:text-gray-600 text-3xl sm:text-4xl">/7</span></div><p id="res-subtitle" class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Prashne #-- • Avg Speed: 6.4s/q</p></div>
-        <div class="my-5 p-4 rounded-2xl bg-paper-100 dark:bg-ink-800 border border-paper-200 dark:border-ink-700 max-w-xs mx-auto"><div id="res-emoji-header" class="font-display font-bold text-xs text-gray-600 dark:text-gray-300 mb-2">Prashne #-- 6/7 (68s)</div><div id="res-emoji-grid" class="text-2xl tracking-widest select-all my-1">🟩🟩🟥🟩🟩🟩🟩</div><div id="res-emoji-footer" class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 mt-2">⚡ Avg: 9.8s/q • 🔥 Streak: 1</div><div id="res-site-link-preview" class="text-[11px] font-bold text-saffron mt-1">https://prashne-trivia.github.io/</div></div>
-        <div class="grid grid-cols-3 gap-2 mb-6"><div class="p-2.5 rounded-2xl bg-paper-50 dark:bg-ink-800/60 border border-paper-200 dark:border-ink-700"><div id="res-accuracy" class="font-display font-bold text-base sm:text-lg text-peacock">86%</div><div class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Accuracy</div></div><div class="p-2.5 rounded-2xl bg-paper-50 dark:bg-ink-800/60 border border-paper-200 dark:border-ink-700"><div id="res-avg-speed" class="font-display font-bold text-base sm:text-lg">6.4s</div><div class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Avg Speed</div></div><div class="p-2.5 rounded-2xl bg-paper-50 dark:bg-ink-800/60 border border-paper-200 dark:border-ink-700"><div id="res-streak" class="font-display font-bold text-base sm:text-lg text-saffron">1 🔥</div><div class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Daily Streak</div></div></div>
-        <div class="space-y-2.5"><button onclick="shareWhatsApp()" class="btn-tactile w-full py-3.5 px-5 rounded-2xl bg-[#25D366] hover:bg-[#20BD5A] text-ink-950 font-display font-bold text-sm sm:text-base shadow-arcade flex items-center justify-center gap-2">📱 <span>Share on WhatsApp</span></button><div class="grid grid-cols-2 gap-2.5"><button onclick="shareInstagram()" class="btn-tactile py-3 px-4 rounded-2xl bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white font-display font-bold text-xs sm:text-sm">📸 Instagram</button><button onclick="shareFacebook()" class="btn-tactile py-3 px-4 rounded-2xl bg-[#1877F2] hover:bg-[#166FE5] text-white font-display font-bold text-xs sm:text-sm">f Facebook</button></div><div class="grid grid-cols-2 gap-2.5"><button onclick="shareAnywhere()" class="btn-tactile py-3 px-4 rounded-2xl bg-indigoRoyal hover:bg-indigoRoyal/90 text-white font-display font-bold text-xs sm:text-sm">Share score</button><button onclick="copyScoreText()" class="btn-tactile py-3 px-4 rounded-2xl bg-paper-100 dark:bg-ink-800 hover:bg-paper-200 dark:hover:bg-ink-700 border border-paper-200 dark:border-ink-700 font-display font-bold text-xs sm:text-sm">Copy score</button></div></div>
+  html: `
+    <section id="view-results" class="hidden space-y-4 animate-pop">
+      <div class="rounded-3xl bg-white dark:bg-ink-900 border-2 border-paper-200 dark:border-ink-700 p-5 text-center shadow-lg">
+        <div class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-saffron/15 text-saffron border border-saffron/30 mb-3"><span id="res-rank-title">Done!</span></div>
+        <div class="font-display font-bold text-5xl sm:text-6xl tracking-tight"><span id="res-points" class="text-saffron">0.00</span><span class="text-gray-400 dark:text-gray-600 text-xl sm:text-2xl"> / 200</span></div>
+        <p id="res-subtitle" class="text-xs text-gray-500 mt-1"></p>
+        <p id="res-bonus" class="hidden text-xs font-bold text-peacock mt-1">+25 perfect-round bonus</p>
+        <div id="res-rank-box" class="mt-4 p-3 rounded-2xl bg-paper-100 dark:bg-ink-800 border border-paper-200 dark:border-ink-700 text-sm"></div>
+        <div class="mt-4 p-4 rounded-2xl bg-paper-100 dark:bg-ink-800 border border-paper-200 dark:border-ink-700 max-w-xs mx-auto">
+          <div id="res-emoji-header" class="font-display font-bold text-xs mb-2"></div>
+          <div id="res-emoji-grid" class="text-2xl tracking-wide mb-2"></div>
+          <div id="res-emoji-footer" class="text-xs text-gray-500"></div>
+        </div>
       </div>
-      <div class="flex gap-2.5"><button onclick="goHome()" class="btn-tactile w-full py-3.5 px-5 rounded-2xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 font-display font-bold text-sm">Return Home</button></div>
-      <div class="rounded-3xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-5 sm:p-6 space-y-4"><div class="flex items-center justify-between"><h3 class="font-display font-bold text-base sm:text-lg">Question Breakdown</h3><span class="text-xs font-semibold text-gray-500">7 Questions</span></div><div id="review-list" class="space-y-3"></div></div>
+      <div class="space-y-2.5">
+        <button onclick="openShareModal()" class="btn-tactile w-full py-3.5 px-5 rounded-2xl bg-saffron hover:bg-saffron-hover text-white font-display font-bold text-sm">Share your score</button>
+        <div class="flex gap-2.5">
+          <button onclick="openLeaderboard()" class="btn-tactile w-full py-3.5 px-5 rounded-2xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 font-display font-bold text-sm">Leaderboard</button>
+          <button onclick="goHome()" class="btn-tactile w-full py-3.5 px-5 rounded-2xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 font-display font-bold text-sm">Home</button>
+        </div>
+      </div>
+      <div class="rounded-3xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-5 space-y-3">
+        <h3 class="font-display font-bold text-base">What you learned today</h3>
+        <div id="review-list" class="space-y-2.5"></div>
+      </div>
     </section>`,
   mount() { document.getElementById('app-main').insertAdjacentHTML('beforeend', this.html); },
 
-  // Fill the results view from a finished-game result object
+  // Fill the view from a get_result response (plus res.streak added by app.js)
   render(res) {
+    res.emojiBlocks = res.answers.map(a => a.selected_index === null ? '🟨' : (a.correct ? '🟩' : '🟥')).join('');
+    res.punchline = getScorePhrase(res.correct_count);
     latestRes = res;
     const $ = (id) => document.getElementById(id);
     $('res-rank-title').textContent = res.punchline;
-    $('res-score').textContent = res.score;
-    $('res-subtitle').textContent = `Prashne #${res.issueNumber} • Avg Speed: ${res.avgTime}s/q`;
-    $('res-emoji-header').textContent = `Prashne #${res.issueNumber} ${res.score}/7 (${Math.round(res.totalTime)}s)`;
+    $('res-points').textContent = fmtPoints(res.points);
+    $('res-subtitle').textContent = `Prashne #${res.issue_number} • ${res.correct_count}/7 correct • ${fmtTime(res.total_time)} total`;
+    $('res-bonus').classList.toggle('hidden', !(Number(res.bonus) > 0));
+    $('res-emoji-header').textContent = `Prashne #${res.issue_number} • ${fmtPoints(res.points)} pts`;
     $('res-emoji-grid').textContent = res.emojiBlocks;
-    $('res-emoji-footer').textContent = `⚡ Avg: ${res.avgTime}s/q • 🔥 Streak: ${res.streak}`;
-    $('res-accuracy').textContent = `${res.accuracy}%`;
-    $('res-avg-speed').textContent = `${res.avgTime}s`;
-    $('res-streak').textContent = `${res.streak} 🔥`;
+    $('res-emoji-footer').textContent = `${res.correct_count}/7 • ${fmtTime(res.total_time)} • 🔥 Streak: ${res.streak || 0}`;
 
-    // Per-question breakdown
-    const list = $('review-list'); list.innerHTML = '';
+    // Rank / guest / practice note
+    const box = $('res-rank-box');
+    if (res.ranked && res.rank_today) {
+      box.innerHTML = `You are <b class="text-saffron">#${res.rank_today}</b> on today's board. <button onclick="openLeaderboard()" class="underline font-semibold">See board</button>`;
+    } else if (res.date === getTodayKey() && isGuest()) {
+      box.innerHTML = `Playing as a guest, so this score is not ranked. <button onclick="openLoginModal()" class="underline font-semibold text-saffron">Log in</button> to join the board.`;
+    } else {
+      box.textContent = 'Past issue: practice only, not ranked.';
+    }
+
+    // Review: the fact is the main point of each card
     const letters = ['A', 'B', 'C', 'D'];
-    res.questions.forEach((q, idx) => {
-      const ans = res.answers[idx];
+    const list = $('review-list'); list.innerHTML = '';
+    res.answers.forEach((a, idx) => {
+      const timeout = a.selected_index === null;
+      const status = a.correct ? `<span class="text-peacock">Correct +${fmtPoints(a.points)}</span>` : (timeout ? '<span class="text-amber-500">Time out</span>' : '<span class="text-rose-500">Incorrect</span>');
+      const yours = (!a.correct && !timeout) ? `<p class="text-xs text-gray-500">Your answer: ${letters[a.selected_index]}. ${escapeHtml(a.options[a.selected_index])}</p>` : '';
       const item = document.createElement('div');
       item.className = 'p-4 rounded-2xl bg-paper-50 dark:bg-ink-800/70 border border-paper-200 dark:border-ink-700 space-y-2';
-      item.innerHTML = `<div class="flex items-center justify-between"><span class="font-bold text-xs text-gray-500">Q${idx + 1}/7</span><span class="text-xs font-bold ${ans.isCorrect ? 'text-peacock' : 'text-rose-500'}">${ans.isCorrect ? 'Correct' : ans.isTimeout ? 'Time out' : 'Incorrect'}</span></div><p class="font-display font-bold text-sm">${q.question}</p><p class="text-xs text-peacock font-semibold">Correct: ${letters[q.correctIndex]}. ${q.options[q.correctIndex]}</p><p class="text-xs text-gray-500">💡 ${q.fact}</p>`;
+      item.innerHTML = `<div class="flex items-center justify-between text-xs font-bold"><span class="text-gray-500">Q${idx + 1}/7</span>${status}</div>
+        <p class="font-display font-bold text-sm">${escapeHtml(a.question)}</p>
+        <p class="text-xs text-peacock font-semibold">Answer: ${letters[a.correct_index]}. ${escapeHtml(a.options[a.correct_index])}</p>${yours}
+        <p class="text-xs text-gray-700 dark:text-gray-300 bg-saffron/10 border border-saffron/20 rounded-xl p-2.5">💡 ${escapeHtml(a.fact)}</p>`;
       list.appendChild(item);
     });
   },
