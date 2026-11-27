@@ -6,18 +6,18 @@ const STORAGE_KEY = 'prashne_state_v5';      // browser storage: only theme + so
 const MAX_POINTS = 7 * 25 + 25;              // 7 questions x 25s + 25 bonus for a perfect round
 
 // Supabase project (Settings > API). The anon key is meant to be public: the database rules protect the data.
-const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
+const SUPABASE_URL = 'https://zzkocmnppuovuvtfywxw.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_x94yNKK3W4wmRQBHAvvp-A_jtJ972OM';
 
 // Short line shown with the score (index = number of correct answers, 0-7)
 const SCORE_PHRASES = [
-  'Tough one today. Tomorrow is a fresh start.',
-  'Every expert starts somewhere.',
-  'Getting warmer.',
-  'A solid start!',
-  'Right in the middle. Nicely done.',
-  'Strong run!',
-  'So close to a perfect score!',
-  'Flawless. A perfect 7!',
+  "It's Okay, You missed by a lot. ",
+  "Atleast it wasn't a zero.",
+  'Sheesh! I thought you were better than this.',
+  'Hehe, Its not bad. /s',
+  'Average.',
+  'Its Okay! Average IQ is 100.',
+  'Will this make your parents happy? No!',
+  'Go touch some grass.'
 ];
 function getScorePhrase(correct) { return SCORE_PHRASES[correct] || 'Solid effort!'; }
