@@ -1,9 +1,10 @@
 // App-wide constants
 const SITE_URL = 'https://prashne-trivia.github.io/';
-const TIME_LIMIT = 40;                       // seconds per question (must match the SQL functions)
+const TIME_LIMIT = 40;                       // seconds per question (must match time_limit() in schema.sql)
 const RING_CIRCUMFERENCE = 2 * Math.PI * 20; // timer ring (r=20)
 const STORAGE_KEY = 'prashne_state_v5';      // browser storage: only theme + sound now
-const MAX_POINTS = 7 * 40 + 20;              // 7 questions x 25s + 25 bonus for a perfect round
+const BONUS_POINTS = 20;                     // bonus for 7/7 (must match bonus_points() in schema.sql)
+const MAX_POINTS = 7 * TIME_LIMIT + BONUS_POINTS;   // 7 x 40 + 20 = 300
 
 // Supabase project (Settings > API). The anon key is meant to be public: the database rules protect the data.
 const SUPABASE_URL = 'https://zzkocmnppuovuvtfywxw.supabase.co';
