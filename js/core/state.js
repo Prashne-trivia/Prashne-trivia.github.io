@@ -1,6 +1,6 @@
 // Local state (theme + sound only) and the in-progress game session.
 // Scores, streaks and results now live on the server (see api.js).
-let appState = { theme: 'dark', soundEnabled: true };
+let appState = { theme: 'dark', soundEnabled: true, promptDismissedDate: null };   // promptDismissedDate: day the login prompt was closed
 let myStats = { played: 0, best_correct: null, best_points: null, streak: 0 };
 let session = { date: null, issueNumber: 1, attemptId: null, ranked: false, answers: [], position: 1, isAnswered: false, finished: false, timerInterval: null, questionStartTime: 0 };
 
