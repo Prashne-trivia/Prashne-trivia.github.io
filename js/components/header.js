@@ -5,7 +5,7 @@
 const HeaderComponent = {
   html: `<header class="w-full max-w-xl mx-auto px-4 pt-4 pb-2 flex items-center justify-between">
     <button onclick="goHome()" class="flex items-center gap-2.5 group focus:outline-none text-left" title="Return to Prashne Home">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-saffron to-amber-500 flex items-center justify-center text-white font-display font-bold text-xl shadow-arcade-saffron group-hover:scale-105 transition-transform">P</div>
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-saffron to-amber-500 flex items-center justify-center text-white font-display font-bold text-xl shadow-arcade-saffron group-hover:scale-105 transition-transform">ಪ್ರ</div>
       <div class="hidden min-[430px]:block">
         <div class="flex items-center gap-1.5"><span class="font-display font-bold text-xl tracking-tight leading-none text-gray-900">Prashne</span></div>
         <p class="text-[11px] font-medium text-ink-700/70 dark:text-gray-400 mt-0.5">Daily Trivia</p>
