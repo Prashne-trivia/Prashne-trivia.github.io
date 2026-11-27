@@ -23,7 +23,7 @@ async function renderScoreCard(res) {
   // Logo + name
   const lg = g.createLinearGradient(80, 80, 190, 190); lg.addColorStop(0, '#FF6B00'); lg.addColorStop(1, '#F59E0B');
   rrect(80, 80, 110, 110, 28); g.fillStyle = lg; g.fill();
-  text('P', 135, 158, `700 76px ${DISPLAY}`, '#fff', 'center');
+  text('ಪ್ರ', 135, 158, `700 76px ${DISPLAY}`, '#fff', 'center');
   text('Prashne', 215, 132, `700 62px ${DISPLAY}`, '#fff');
   text('Daily Trivia', 215, 174, `500 30px ${BODY}`, '#9CA3AF');
   text(`ISSUE #${res.issue_number}`, W - 80, 128, `700 36px ${DISPLAY}`, '#FF6B00', 'right');
