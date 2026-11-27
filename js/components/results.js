@@ -57,6 +57,9 @@ const ResultsComponent = {
       box.textContent = 'Past issue: practice only, not ranked.';
     }
 
+    // Invite guests to sign in (closable popup, once a day)
+    if (!res.ranked && isGuest() && res.date === getTodayKey()) setTimeout(maybeShowLoginPrompt, 900);
+
     // Review: the fact is the main point of each card
     const letters = ['A', 'B', 'C', 'D'];
     const list = $('review-list'); list.innerHTML = '';

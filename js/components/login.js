@@ -17,6 +17,18 @@ const LoginComponent = {
       </div>
     </div>
 
+    <!-- Sign-in prompt for guests (closable, shown at most once a day) -->
+    <div id="login-prompt-modal" class="modal-overlay hidden" onclick="if(event.target===this)dismissLoginPrompt()">
+      <div class="modal-card rounded-3xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-5 space-y-4 text-center">
+        <div class="flex justify-end"><button onclick="dismissLoginPrompt()" aria-label="Close" class="text-gray-400 text-xl leading-none px-2">✕</button></div>
+        <div class="text-4xl -mt-2">🏆</div>
+        <h3 class="font-display font-bold text-lg">Sign in to join the leaderboards</h3>
+        <p class="text-xs text-gray-600 dark:text-gray-400">You're playing as a guest, so your score isn't ranked. Sign in to compete on the daily and monthly boards and keep your streak on every device.</p>
+        <button onclick="acceptLoginPrompt()" class="btn-tactile w-full py-3 px-4 rounded-2xl bg-saffron hover:bg-saffron-hover text-white font-display font-bold text-sm">Sign in</button>
+        <button onclick="dismissLoginPrompt()" class="w-full py-2 text-xs text-gray-500 underline">Maybe later</button>
+      </div>
+    </div>
+
     <!-- Nickname -->
     <div id="nickname-modal" class="modal-overlay hidden">
       <div class="modal-card rounded-3xl bg-white dark:bg-ink-900 border border-paper-200 dark:border-ink-700 p-5 space-y-4">
@@ -84,3 +96,16 @@ async function doSaveNickname() {
   } catch (e) { msg.textContent = friendlyError(e); }
   btn.disabled = false;
 }
+
+// ---- Guest sign-in prompt ----
+// Shows a closable popup to guests, at most once per day. Call maybeShowLoginPrompt() wherever you want it.
+function maybeShowLoginPrompt() {
+  if (!isGuest()) return;                                        // already logged in
+  if (appState.promptDismissedDate === getTodayKey()) return;    // already closed today
+  openModal('login-prompt-modal');
+}
+function dismissLoginPrompt() {
+  closeModal('login-prompt-modal');
+  appState.promptDismissedDate = getTodayKey(); saveState();     // don't show again today
+}
+function acceptLoginPrompt() { closeModal('login-prompt-modal'); openLoginModal(); }
